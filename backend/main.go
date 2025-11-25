@@ -10,20 +10,17 @@ import (
 func main() {
 	app := fiber.New()
 
-	// السماح للويب + الموبايل يتصلون على الـ API
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*", // بعدين تقدر تضبطها على الدومينات حقك
+		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
 
-	// اختبار بسيط
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"status": "ok",
 		})
 	})
 
-	// مثال مبدئي لـ حساب سعر ألبوم (بشكل ثابت الآن)
 	app.Post("/pricing", func(c *fiber.Ctx) error {
 		type AlbumConfig struct {
 			Size        string `json:"size"`
@@ -40,25 +37,22 @@ func main() {
 
 		price := 0.0
 
-		// السعر الأساسي حسب الحجم
 		switch cfg.Size {
 		case "30x30":
 			price += 20
 		case "20x20":
 			price += 12
 		default:
-			price += 15 // افتراضي مثلاً
+			price += 15
 		}
 
-		// عدد الصور الإضافية
 		baseImages := 30
 		if cfg.ImagesCount > baseImages {
 			extra := cfg.ImagesCount - baseImages
 			price += float64(extra) * 0.3
 		}
 
-		// الغلاف
-		if cfg.Cover == "جلد" {
+		if cfg.Cover == "leather" {
 			price += 8
 		}
 
